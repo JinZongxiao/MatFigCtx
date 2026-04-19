@@ -1,0 +1,59 @@
+# ============================================================
+# MatFigCtx — Python dependencies
+# Install: pip install -r requirements.txt
+# Tested on Python 3.10, CUDA 12.1
+# ============================================================
+
+# ------ Core utilities ------
+numpy>=1.23
+pandas>=1.5.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+tqdm>=4.64.0
+
+# ------ Image processing ------
+Pillow>=9.0.0
+opencv-python>=4.7.0
+
+# ------ Document parsing ------
+beautifulsoup4>=4.11.0
+markdown>=3.4.0
+# MinerU (PDF parser) — install separately:
+#   pip install magic-pdf[full]
+#   See: https://github.com/opendatalab/MinerU
+
+# ------ Deep learning ------
+torch>=2.0.0
+torchvision>=0.15.0
+# Flash Attention (optional but recommended for VLMs)
+# pip install flash-attn --no-build-isolation
+
+# ------ Transformers / VLMs ------
+transformers>=4.50.0
+accelerate>=0.30.0
+sentencepiece>=0.1.99
+tiktoken>=0.6.0
+
+# ------ Fine-tuning (App 1 / Gemma) ------
+peft>=0.10.0
+datasets>=2.18.0
+
+# ------ LLM / API clients ------
+openai>=1.0.0          # DeepSeek / DashScope (OpenAI-compatible)
+
+# ------ Knowledge graph (App 2) ------
+neo4j>=5.0.0
+
+# ------ Agent frontend (App 3) ------
+langchain>=0.2.0
+langchain-community>=0.2.0
+langchain-openai>=0.1.0
+pydantic>=2.0.0
+
+# ------ RAG / vector store ------
+chromadb>=0.4.0
+
+# ------ Benchmark / analysis ------
+matplotlib>=3.7.0
+scikit-learn>=1.2.0    # cosine_similarity (optional cross-check)
+scipy>=1.10.0

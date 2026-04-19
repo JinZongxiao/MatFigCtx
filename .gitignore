@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+
+# Secrets
+.env
+
+# Large data and model files
+data/
+outputs/
+benchmark_data/
+classifier/*.pt
+classifier/*.pth
+
+# IDE
+.idea/
+.vscode/
+
+# Docs (manuscripts, drafts — manage separately)
+docs/
+
+# Log files
+*.log
+
+# Fine-tuning checkpoints and logs (code is tracked, artifacts are not)
+finetune_gemma/cpt_checkpoints*/
+finetune_gemma/*.log
+
+# Misc
+README.pdf
