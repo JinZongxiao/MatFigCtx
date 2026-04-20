@@ -3,7 +3,7 @@ core/vlm_inference.py
 
 Grounded Figure Interpretation Skill: generates Scientifically Informative
 Statements (SIS) from a figure image and its structured evidence chain.
-面向图像理解的受证据约束推理模块：根据图像及其结构化证据链生成 SIS。
+面向图像理解的证据驱动推理模块：根据图像及其结构化证据链生成 SIS。
 
 Prompt structure follows the paper description:
   1. System instruction (traceability constraint)

@@ -26,7 +26,7 @@ MatFigCtx 是一个从材料科学论文图像中抽取结构化科学信息的�
 
 ```bash
 # 1) 克隆仓库
-git clone https://github.com/<your-username>/MatFigCtx.git
+git clone https://github.com/JinZongxiao/MatFigCtx.git
 cd MatFigCtx
 
 # 2) 创建虚拟环境（推荐）

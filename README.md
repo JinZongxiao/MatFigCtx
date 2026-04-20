@@ -105,7 +105,7 @@ MatFigCtx/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<your-username>/MatFigCtx.git
+git clone https://github.com/JinZongxiao/MatFigCtx.git
 cd MatFigCtx
 
 # 2. Create a virtual environment (recommended)
