@@ -67,7 +67,10 @@ VAL_TRANSFORM = transforms.Compose([
 
 
 def build_model(num_classes: int) -> nn.Module:
-    """ResNet-50 with frozen backbone and a fresh FC head. / 冻结骨干，仅训练全连接头。"""
+    """
+    ResNet-50 with frozen backbone and a fresh FC head.
+    冻结骨干网络并重建可训练的全连接分类头。
+    """
     model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
     for param in model.parameters():      # freeze backbone / 冻结骨干网络
         param.requires_grad = False

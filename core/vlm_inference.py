@@ -29,8 +29,8 @@ from PIL import Image
 
 # Maximum characters kept per evidence field.
 # 每个证据字段保留的最大字符数，避免上下文窗口不足导致提示词溢出。
-_MAX_LOCAL_CHARS  = 2000   # caption + body text combined
-_MAX_GLOBAL_CHARS = 1500   # abstract + conclusion combined
+_MAX_LOCAL_CHARS  = 2000   # caption + body text combined / 图注与正文合并长度上限
+_MAX_GLOBAL_CHARS = 1500   # abstract + conclusion combined / 摘要与结论合并长度上限
 
 _SYSTEM_INSTRUCTION = (
     "You are an expert materials science assistant. "
@@ -50,7 +50,10 @@ _OUTPUT_CONSTRAINT = (
 
 
 def _build_subfig_prior(sub_image_type: list) -> str:
-    """Format the subfigure-type prior block. / 格式化子图类型先验片段。"""
+    """
+    Format the subfigure-type prior block.
+    格式化子图类型先验片段。
+    """
     if not sub_image_type:
         return ""
     lines = []
