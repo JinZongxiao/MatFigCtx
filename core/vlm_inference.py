@@ -3,6 +3,7 @@ core/vlm_inference.py
 
 Grounded Figure Interpretation Skill: generates Scientifically Informative
 Statements (SIS) from a figure image and its structured evidence chain.
+面向图像理解的受证据约束推理模块：根据图像及其结构化证据链生成 SIS。
 
 Prompt structure follows the paper description:
   1. System instruction (traceability constraint)
@@ -12,6 +13,14 @@ Prompt structure follows the paper description:
   5. Abstract            [global context]
   6. Conclusions         [global context]
   7. Output constraint
+提示词结构与论文一致：
+  1. 系统指令（可追溯约束）
+  2. 子图类型先验
+  3. 图注（局部证据）
+  4. 正文引用段落（局部证据）
+  5. 摘要（全局上下文）
+  6. 结论（全局上下文）
+  7. 输出格式约束
 """
 
 import torch
@@ -19,7 +28,7 @@ from pathlib import Path
 from PIL import Image
 
 # Maximum characters kept per evidence field.
-# Prevents prompt overflow on models with limited context windows.
+# 每个证据字段保留的最大字符数，避免上下文窗口不足导致提示词溢出。
 _MAX_LOCAL_CHARS  = 2000   # caption + body text combined
 _MAX_GLOBAL_CHARS = 1500   # abstract + conclusion combined
 
@@ -41,7 +50,7 @@ _OUTPUT_CONSTRAINT = (
 
 
 def _build_subfig_prior(sub_image_type: list) -> str:
-    """Format the subfigure-type prior block."""
+    """Format the subfigure-type prior block. / 格式化子图类型先验片段。"""
     if not sub_image_type:
         return ""
     lines = []
@@ -55,22 +64,24 @@ def _build_subfig_prior(sub_image_type: list) -> str:
 def _build_prompt(evidence: dict) -> str:
     """
     Build the structured evidence-chain prompt.
+    构建结构化证据链提示词。
 
     Sections are included only when the corresponding evidence field is
     non-empty, to avoid injecting blank context blocks.
+    仅在字段非空时添加对应段落，避免注入空上下文块。
     """
     sections = [_SYSTEM_INSTRUCTION]
 
-    # --- Subfigure-type prior ---
+    # --- Subfigure-type prior / 子图类型先验 ---
     prior = _build_subfig_prior(evidence.get("sub_image_type") or [])
     if prior:
         sections.append(prior)
 
-    # --- Local evidence ---
+    # --- Local evidence / 局部证据 ---
     caption   = (evidence.get("img_caption") or "").strip()
     body_text = (evidence.get("img_cap_text") or "").strip()
 
-    # Soft-cap local evidence to avoid overflow
+    # Soft-cap local evidence to avoid overflow / 对局部证据做软截断
     if len(body_text) > _MAX_LOCAL_CHARS:
         body_text = body_text[:_MAX_LOCAL_CHARS] + " [truncated]"
 
@@ -81,7 +92,7 @@ def _build_prompt(evidence: dict) -> str:
             f"[Body Text] (paragraphs referencing this figure):\n{body_text}"
         )
 
-    # --- Global context ---
+    # --- Global context / 全局上下文 ---
     abstract   = (evidence.get("abstract") or "").strip()
     conclusion = (evidence.get("conclusion") or "").strip()
 
@@ -105,6 +116,7 @@ def generate_sis(evidence: dict,
                  max_new_tokens: int = 1024) -> str:
     """
     Generate SIS for a single figure evidence record.
+    针对单条图像证据记录生成 SIS。
 
     Args:
         evidence: dict with keys img_path, img_caption, img_cap_text,
@@ -115,11 +127,13 @@ def generate_sis(evidence: dict,
 
     Returns:
         Generated SIS as a newline-separated string.
+        返回换行分隔的 SIS 文本。
     """
     img_path = evidence.get("img_path", "")
     sub_imgs = evidence.get("sub_images") or []
 
     # Composite figure image first, then individual panels
+    # 先放整图，再放子图。
     image_paths = [img_path] + list(sub_imgs)
     image_paths = [p for p in image_paths if p and Path(p).exists()]
 
@@ -152,9 +166,11 @@ def generate_sis(evidence: dict,
 def load_vlm(model_path: str):
     """
     Load a VLM and its processor from a local model directory.
+    从本地目录加载 VLM 及其处理器。
 
     Tries Qwen3VLForConditionalGeneration first; falls back to the generic
     AutoModelForMultimodalLM for other HuggingFace-compatible VLMs.
+    优先尝试 Qwen3VLForConditionalGeneration，失败时回退到通用多模态模型类。
     """
     from transformers import AutoProcessor
     try:

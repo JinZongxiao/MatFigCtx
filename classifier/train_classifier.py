@@ -2,11 +2,16 @@
 classifier/train_classifier.py
 
 Train the three-class subfigure classifier used in MatFigCtx.
+训练 MatFigCtx 使用的三分类子图分类器。
 
 Classes:
     0 - line_plot       (property curves, stress-strain, etc.)
     1 - xrd             (X-ray diffraction patterns)
     2 - microstructure  (SEM, TEM, OM, EBSD, etc.)
+类别：
+    0 - line_plot       （性能曲线、应力-应变曲线等）
+    1 - xrd             （X 射线衍射图谱）
+    2 - microstructure  （SEM、TEM、OM、EBSD 等显微组织图）
 
 Training setup (as reported in the paper):
     - Base model : ResNet-50 pre-trained on ImageNet-1K
@@ -25,6 +30,8 @@ Output:
 
 Usage:
     python classifier/train_classifier.py --data-dir /path/to/annotated_panels
+用法：
+    python classifier/train_classifier.py --data-dir /path/to/annotated_panels
 """
 
 import argparse
@@ -38,7 +45,7 @@ from torchvision import datasets, models, transforms
 
 CLASS_NAMES = ["line_plot", "xrd", "microstructure"]
 
-# ── Augmentation ──────────────────────────────────────────
+# ── Augmentation / 数据增强 ───────────────────────────────
 TRAIN_TRANSFORM = transforms.Compose([
     transforms.Resize(256),
     transforms.RandomCrop(224),
@@ -60,11 +67,11 @@ VAL_TRANSFORM = transforms.Compose([
 
 
 def build_model(num_classes: int) -> nn.Module:
-    """ResNet-50 with frozen backbone and a fresh FC head."""
+    """ResNet-50 with frozen backbone and a fresh FC head. / 冻结骨干，仅训练全连接头。"""
     model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
-    for param in model.parameters():      # freeze backbone
+    for param in model.parameters():      # freeze backbone / 冻结骨干网络
         param.requires_grad = False
-    model.fc = nn.Linear(model.fc.in_features, num_classes)   # trainable head
+    model.fc = nn.Linear(model.fc.in_features, num_classes)   # trainable head / 可训练分类头
     return model
 
 
@@ -81,8 +88,9 @@ def train(data_dir: str, output_path: str,
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[INFO] device: {device}")
 
-    # ── Dataset ───────────────────────────────────────────
+    # ── Dataset / 数据集 ───────────────────────────────────
     # Expected layout: data_dir/line_plot/*.jpg  etc.
+    # 期望目录结构：data_dir/line_plot/*.jpg 等。
     full_dataset = datasets.ImageFolder(data_dir, transform=TRAIN_TRANSFORM)
     class_names  = full_dataset.classes
     print(f"[INFO] Classes found: {class_names}")
@@ -94,7 +102,7 @@ def train(data_dir: str, output_path: str,
         full_dataset, [n_train, n_val],
         generator=torch.Generator().manual_seed(seed)
     )
-    # Apply val transform to the validation split
+    # Apply val transform to the validation split / 验证集使用验证增强
     val_set.dataset.transform = VAL_TRANSFORM
 
     train_loader = DataLoader(train_set, batch_size=batch_size,
@@ -102,19 +110,19 @@ def train(data_dir: str, output_path: str,
     val_loader   = DataLoader(val_set,   batch_size=batch_size,
                               shuffle=False, num_workers=4, pin_memory=True)
 
-    # ── Model ─────────────────────────────────────────────
+    # ── Model / 模型 ───────────────────────────────────────
     model     = build_model(num_classes=len(class_names)).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(
         model.fc.parameters(), lr=lr, weight_decay=weight_decay
     )
 
-    # ── Training loop ─────────────────────────────────────
+    # ── Training loop / 训练循环 ────────────────────────────
     best_val_loss = float("inf")
     no_improve    = 0
 
     for epoch in range(1, max_epochs + 1):
-        # Train
+        # Train / 训练阶段
         model.train()
         train_loss = train_acc = 0.0
         for imgs, labels in train_loader:
@@ -130,7 +138,7 @@ def train(data_dir: str, output_path: str,
         train_loss /= n_train
         train_acc  /= n_train
 
-        # Validate
+        # Validate / 验证阶段
         model.eval()
         val_loss = val_acc = 0.0
         with torch.no_grad():
@@ -146,7 +154,7 @@ def train(data_dir: str, output_path: str,
               f"train_loss={train_loss:.4f}  train_acc={train_acc:.4f}  "
               f"val_loss={val_loss:.4f}  val_acc={val_acc:.4f}")
 
-        # Early stopping
+        # Early stopping / 早停策略
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             no_improve    = 0

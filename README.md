@@ -2,6 +2,8 @@
 
 **Context-Grounded Multimodal Framework for Automated Scientific Information Extraction from Materials Characterization Figures**
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C.svg)](https://pytorch.org/)

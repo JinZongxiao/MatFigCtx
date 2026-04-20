@@ -1,5 +1,7 @@
 # Subfigure Classifier Checkpoint
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 This directory holds the ResNet-50 checkpoint for the three-class subfigure classifier
 (microstructural image / XRD pattern / property curve).
 

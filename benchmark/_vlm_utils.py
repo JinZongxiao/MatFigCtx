@@ -2,6 +2,7 @@
 benchmark/_vlm_utils.py
 Shared utilities for loading Qwen3-VL / InternVL3.5 and running inference.
 Used by ablation.py, matcha_pipeline.py, matcha_eval.py.
+用于加载 Qwen3-VL / InternVL3.5 并执行推理的共享工具函数。
 """
 
 import os
@@ -11,7 +12,7 @@ import torch
 from PIL import Image, ImageOps
 
 
-# -------- Image preprocessing --------
+# -------- Image preprocessing / 图像预处理 --------
 def resize_image(image_path: str, new_size: int = 512, cache_root: str = None) -> str:
     img = Image.open(image_path)
     w, h = img.size
@@ -30,7 +31,7 @@ def resize_image(image_path: str, new_size: int = 512, cache_root: str = None) -
     return out_path
 
 
-# -------- Model loader --------
+# -------- Model loader / 模型加载 --------
 def load_vlm_model(model_key: str, model_path: str):
     """Return (model, processor) for Qwen3-VL or InternVL3.5."""
     from transformers import AutoProcessor
@@ -56,7 +57,7 @@ def load_vlm_model(model_key: str, model_path: str):
     return model, processor
 
 
-# -------- Inference --------
+# -------- Inference / 推理 --------
 def _run_qwen3(model, processor, img_paths, prompt, max_new_tokens):
     content = [{"type": "image", "image": p} for p in img_paths]
     content.append({"type": "text", "text": prompt})
