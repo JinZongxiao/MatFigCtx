@@ -1,0 +1,27 @@
+# Paths (replace with local directories before running)
+PDF_INPUT_DIR: "/path/to/raw_pdfs"
+PAPER_OUTPUT_DIR: "/path/to/parsed_papers"
+ICT_OUTPUT_DIR: "/path/to/evidence_chains"
+SIS_OUTPUT_DIR: "/path/to/sis_outputs"
+
+# VLM for SIS extraction: local/HF checkpoint path OR "api:<model_name>"
+VLM_MODEL_PATH: "/path/to/Qwen3-VL-8B-Instruct"
+GEMMA_MODEL_PATH: "/path/to/gemma-4-E2B-it"
+SCIBERT_PATH: "allenai/scibert_scivocab_uncased"
+
+VLM_REGISTRY:
+  qwen3-2b: "/path/to/Qwen3-VL-2B-Instruct"
+  qwen3-4b: "/path/to/Qwen3-VL-4B-Instruct"
+  qwen3-8b: "/path/to/Qwen3-VL-8B-Instruct"
+  internvl-2b: "/path/to/InternVL3_5-2B-HF"
+  internvl-4b: "/path/to/InternVL3_5-4B-HF"
+  internvl-8b: "/path/to/InternVL3_5-8B-HF"
+
+# OpenAI-compatible API for visual verifier, KG triple extraction, and automated judge
+# Works with DeepSeek, OpenAI, Gemini, DashScope, OpenRouter, vLLM, etc. (key read from .env)
+LLM_BASE_URL: "https://api.deepseek.com"
+LLM_MODEL: "deepseek-flash"
+
+# Decoding
+MAX_NEW_TOKENS: 1536
+MAX_IMAGE_SIDE: 1024

@@ -1,0 +1,18 @@
+numpy>=1.24
+pandas>=2.0
+pyyaml>=6.0
+python-dotenv>=1.0
+tqdm>=4.65
+Pillow>=10.0
+opencv-python>=4.8
+beautifulsoup4>=4.12
+markdown>=3.5
+scipy>=1.11
+torch>=2.5
+transformers>=4.50
+accelerate>=0.34
+peft>=0.14
+sentencepiece>=0.2
+openai>=1.30
+# MinerU (PDF parsing) is installed separately:
+# pip install magic-pdf[full]
